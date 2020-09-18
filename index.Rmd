@@ -1,0 +1,29 @@
+---
+title: "Leaflet map - Public bike stations in Buenos Aires, Argentina"
+output: html_document
+---
+## Date: 2020-09-18
+
+```{r, message=FALSE,warning=FALSE}
+# Load libraries
+library(tidyverse)
+library(leaflet)
+
+# Import file
+if(!file.exists("bike_stations.csv")){
+  download.file("http://cdn.buenosaires.gob.ar/datosabiertos/datasets/transporte/estaciones-bicicletas-publicas/nuevas-estaciones-bicicletas-publicas.csv","bike_stations.csv")
+}
+
+# Read file
+bikes <- read_csv("bike_stations.csv")
+
+# Crete map
+bikes %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(lat=bikes$lat, 
+             lng = bikes$long, 
+             popup = paste("Station: ",bikes$nombre_estacion,"Capacity: ",bikes$capacidad),
+             clusterOptions = markerClusterOptions() )
+
+```
